@@ -67,16 +67,27 @@ int main()
 	smgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
 
 
+
+
 	/*--------------------------------------------------------------------*/
 	lua_register(L, "addMesh", addMesh);
 	lua_register(L, "addBox", addBox);
 	lua_register(L, "getNodes", getNodes);
+
+
+	int lastFPS = -1;
+	irr::u32 then = device->getTimer()->getTime();
+	irr::f32 movement_speed = 3.0f;
 	/*--------------------------------------------------------------------*/
-
-
 
 	while(device->run()) {
 		driver->beginScene(true, true, irr::video::SColor(255, 90, 101, 140));
+
+
+		/*------------------------------------------*/
+		irr::u32 now = device->getTimer()->getTime();
+		irr::f32 deltaTime = (irr::f32)(now - then) / 1000.0f;
+		/*------------------------------------------*/
 
 		smgr->drawAll();
 		guienv->drawAll();
