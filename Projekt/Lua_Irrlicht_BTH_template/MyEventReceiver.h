@@ -44,4 +44,5 @@ public:
 private:
 	// We use this array to store the current state of each key
 	bool KeyIsDown[KEY_KEY_CODES_COUNT];
+	core::position2di Position;
 };
