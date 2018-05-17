@@ -61,7 +61,7 @@ int main()
 
 	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
 
-
+	// Sphere node that will be moved with WASD
 	scene::ISceneNode * node = smgr->addSphereSceneNode();
 	if (node)
 	{
@@ -112,23 +112,25 @@ int main()
 	}
 
 	// Model 2
-	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("../../Bin/Meshes/sydney.md2");
+	//irr::scene::IAnimatedMesh* mesh = smgr->getMesh("../../Bin/Meshes/sydney.md2");
 
-	if (!mesh) {
-		device->drop();
-		return 1;
-	}
+	//if (!mesh) {
+	//	device->drop();
+	//	return 1;
+	//}
 
-	node = smgr->addAnimatedMeshSceneNode(mesh);
+	//node = smgr->addAnimatedMeshSceneNode(mesh);
 
-	if (node) {
-		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-		node->setMD2Animation(irr::scene::EMAT_STAND);
-		node->setMaterialTexture(0, driver->getTexture("../../Bin/Meshes/sydney.bmp"));
-	}
+	//if (node) {
+	//	node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	//	node->setMD2Animation(irr::scene::EMAT_STAND);
+	//	node->setMaterialTexture(0, driver->getTexture("../../Bin/Meshes/sydney.bmp"));
+	//}
 
-	smgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
-
+	//smgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
+	
+	smgr->addCameraSceneNodeFPS();
+	device->getCursorControl()->setVisible(false);
 
 
 
@@ -140,17 +142,52 @@ int main()
 
 	int lastFPS = -1;
 	irr::u32 then = device->getTimer()->getTime();
-	irr::f32 movement_speed = 3.0f;
+	irr::f32 MOVEMENT_SPEED = 0.2f;
 	/*--------------------------------------------------------------------*/
 
-	while(device->run()) {
-		driver->beginScene(true, true, irr::video::SColor(255, 90, 101, 140));
 
-
+	while (device->run())
+	{
 		/*------------------------------------------*/
-		irr::u32 now = device->getTimer()->getTime();
-		irr::f32 deltaTime = (irr::f32)(now - then) / 1000.0f;
+		const u32 now = device->getTimer()->getTime();
+		const f32 frameDeltaTime = (f32)(now - then) / 1000.0f;
 		then = now;
+		/*------------------------------------------*/
+
+		/*--------------M O V E M E N T-------------*/
+		core::vector3df nodePosition = node->getPosition();
+
+		if (receiver.IsKeyDown(irr::KEY_KEY_W))
+			nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
+		else if (receiver.IsKeyDown(irr::KEY_KEY_S))
+			nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
+
+		if (receiver.IsKeyDown(irr::KEY_KEY_A))
+			nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
+		else if (receiver.IsKeyDown(irr::KEY_KEY_D))
+			nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
+
+		node->setPosition(nodePosition);
+
+		driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+
+		smgr->drawAll(); // draw the 3d scene
+		device->getGUIEnvironment()->drawAll(); // draw the gui environment (the logo)
+
+		driver->endScene();
+
+		int fps = driver->getFPS();
+
+		if (lastFPS != fps)
+		{
+			core::stringw tmp(L"Movement Example - Irrlicht Engine [");
+			tmp += driver->getName();
+			tmp += L"] fps: ";
+			tmp += fps;
+
+			device->setWindowCaption(tmp.c_str());
+			lastFPS = fps;
+		}
 		/*------------------------------------------*/
 
 		smgr->drawAll();
