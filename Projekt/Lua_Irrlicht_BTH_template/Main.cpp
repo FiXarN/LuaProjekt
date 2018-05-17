@@ -11,6 +11,7 @@
 #include <thread>
 #include "lua.hpp"
 #include <irrlicht.h>
+#include "MyEventReceiver.h"
 
 static int addMesh(lua_State* L);
 static int addBox(lua_State* L);
@@ -36,9 +37,22 @@ int main()
 
 		std::thread conThread(ConsoleThread, L);
 
+
+	// ask user for driver
+	video::E_DRIVER_TYPE driverType = driverChoiceConsole();
+	if (driverType == video::EDT_COUNT)
+		return 1;
+
+	// create device
+	MyEventReceiver receiver;
+
 	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_SOFTWARE, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
 	if(!device)
 		return 1;
+
+
+	if (device == 0)
+		return 1; // could not create selected driver.
 
 	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
 	irr::video::IVideoDriver* driver	= device->getVideoDriver();
@@ -48,13 +62,62 @@ int main()
 	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
 
 
+	scene::ISceneNode * node = smgr->addSphereSceneNode();
+	if (node)
+	{
+		node->setPosition(core::vector3df(0, 0, 30));
+		node->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
+		node->setMaterialFlag(video::EMF_LIGHTING, false);
+	}
+
+	// Cube scene node and an attached "fly circle"
+	scene::ISceneNode* n = smgr->addCubeSceneNode();
+
+	if (n)
+	{
+		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
+		n->setMaterialFlag(video::EMF_LIGHTING, false);
+		scene::ISceneNodeAnimator* anim =
+			smgr->createFlyCircleAnimator(core::vector3df(0, 0, 30), 20.0f);
+		if (anim)
+		{
+			n->addAnimator(anim);
+			anim->drop();
+		}
+	}
+
+	// Model 1
+	scene::IAnimatedMeshSceneNode* anms =
+		smgr->addAnimatedMeshSceneNode(smgr->getMesh("../../media/ninja.b3d"));
+
+	if (anms)
+	{
+		scene::ISceneNodeAnimator* anim =
+			smgr->createFlyStraightAnimator(core::vector3df(100, 0, 60),
+				core::vector3df(-100, 0, 60), 3500, true);
+		if (anim)
+		{
+			anms->addAnimator(anim);
+			anim->drop();
+		}
+		anms->setMaterialFlag(video::EMF_LIGHTING, false);
+
+		anms->setFrameLoop(0, 13);
+		anms->setAnimationSpeed(15);
+		//      anms->setMD2Animation(scene::EMAT_RUN);
+
+		anms->setScale(core::vector3df(2.f, 2.f, 2.f));
+		anms->setRotation(core::vector3df(0, -90, 0));
+		//      anms->setMaterialTexture(0, driver->getTexture("../../media/sydney.bmp"));
+	}
+
+	// Model 2
 	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("../../Bin/Meshes/sydney.md2");
 
 	if (!mesh) {
 		device->drop();
 		return 1;
 	}
-
 
 	node = smgr->addAnimatedMeshSceneNode(mesh);
 
