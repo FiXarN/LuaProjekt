@@ -44,6 +44,14 @@ int main()
 
 	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
 
+	/*--------------------------------------------------------------------*/
+	lua_register(L, "addMesh", addMesh);
+	lua_register(L, "addBox", addBox);
+	lua_register(L, "getNodes", getNodes);
+	/*--------------------------------------------------------------------*/
+
+
+
 	while(device->run()) {
 		driver->beginScene(true, true, irr::video::SColor(255, 90, 101, 140));
 
