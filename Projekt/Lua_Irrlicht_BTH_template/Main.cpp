@@ -100,21 +100,6 @@ int main()
 		}
 		/*------------------------------------------*/
 
-		/*--------------M O V E M E N T-------------*/
-		core::vector3df nodePosition = node->getPosition();
-
-		if (receiver.IsKeyDown(irr::KEY_KEY_W))
-			nodePosition.Y += MOVEMENT_SPEED * frameDeltaTime;
-		else if (receiver.IsKeyDown(irr::KEY_KEY_S))
-			nodePosition.Y -= MOVEMENT_SPEED * frameDeltaTime;
-
-		if (receiver.IsKeyDown(irr::KEY_KEY_A))
-			nodePosition.X -= MOVEMENT_SPEED * frameDeltaTime;
-		else if (receiver.IsKeyDown(irr::KEY_KEY_D))
-			nodePosition.X += MOVEMENT_SPEED * frameDeltaTime;
-
-		node->setPosition(nodePosition);
-
 		driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
 
 		smgr->drawAll(); // draw the 3d scene
@@ -134,7 +119,6 @@ int main()
 			device->setWindowCaption(tmp.c_str());
 			lastFPS = fps;
 		}
-		/*------------------------------------------*/
 
 		smgr->drawAll();
 		guienv->drawAll();
