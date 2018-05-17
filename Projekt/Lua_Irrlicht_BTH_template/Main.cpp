@@ -67,7 +67,7 @@ int main()
 	conThread.join();
 	return 0;
 
-	//xD hi hi hiiiiiih
+	std::cout << "TestHarry" << std::endl;
 }
 
 static int addMesh(lua_State* L) {
