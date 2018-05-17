@@ -66,6 +66,8 @@ int main()
 
 	conThread.join();
 	return 0;
+
+	//xD hi hi hiiiiiih
 }
 
 static int addMesh(lua_State* L) {
