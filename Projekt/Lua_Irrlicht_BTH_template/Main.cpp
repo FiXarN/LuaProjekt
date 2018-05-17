@@ -102,7 +102,9 @@ int main()
 		node->setMaterialTexture(0, driver->getTexture("../../Bin/Meshes/sydney.bmp"));
 	}
 	
-	smgr->addCameraSceneNodeFPS();
+	scene::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS();
+	
+
 	device->getCursorControl()->setVisible(false);
 
 
@@ -125,6 +127,14 @@ int main()
 		const u32 now = device->getTimer()->getTime();
 		const f32 frameDeltaTime = (f32)(now - then) / 1000.0f;
 		then = now;
+
+		// Input Receiver Check
+		if (device->isWindowActive()) {
+			camera->setInputReceiverEnabled(true);
+		}
+		else {
+			camera->setInputReceiverEnabled(false);
+		}
 		/*------------------------------------------*/
 
 		/*--------------M O V E M E N T-------------*/
