@@ -53,6 +53,4 @@ int main()
 
 	conThread.join();
 	return 0;
-
-	std::cout << "hje" << std::endl;
 }
