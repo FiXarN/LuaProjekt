@@ -101,8 +101,6 @@ int main()
 		node->setMD2Animation(irr::scene::EMAT_STAND);
 		node->setMaterialTexture(0, driver->getTexture("../../Bin/Meshes/sydney.bmp"));
 	}
-
-	smgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
 	
 	smgr->addCameraSceneNodeFPS();
 	device->getCursorControl()->setVisible(false);
@@ -123,7 +121,7 @@ int main()
 
 	while (device->run())
 	{
-		/*------------------------------------------*/
+		/*-------------------F P S------------------*/
 		const u32 now = device->getTimer()->getTime();
 		const f32 frameDeltaTime = (f32)(now - then) / 1000.0f;
 		then = now;
