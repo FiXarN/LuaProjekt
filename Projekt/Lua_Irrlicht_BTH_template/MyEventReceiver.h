@@ -18,16 +18,6 @@ public:
 		// Remember whether each key is down or up
 		if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
 			KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
-
-			switch (event.MouseInput.Event) 
-			{
-			case EMIE_MOUSE_MOVED:
-				Position.X = event.MouseInput.X;
-				Position.Y = event.MouseInput.Y;
-				break;
-			default:
-				break;
-			}
 		}
 
 		return false;
@@ -37,10 +27,6 @@ public:
 	virtual bool IsKeyDown(EKEY_CODE keyCode) const
 	{
 		return KeyIsDown[keyCode];
-	}
-
-	core::position2di getCameraPosition() const {
-		return Position;
 	}
 
 	MyEventReceiver()

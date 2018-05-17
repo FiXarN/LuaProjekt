@@ -62,72 +62,47 @@ int main()
 	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
 
 	// Sphere node that will be moved with WASD
-	scene::ISceneNode * node = smgr->addSphereSceneNode();
-	if (node)
-	{
-		node->setPosition(core::vector3df(0, 0, 30));
-		node->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
-		node->setMaterialFlag(video::EMF_LIGHTING, false);
-	}
-
-	// Cube scene node and an attached "fly circle"
-	scene::ISceneNode* n = smgr->addCubeSceneNode();
-
-	if (n)
-	{
-		n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
-		n->setMaterialFlag(video::EMF_LIGHTING, false);
-		scene::ISceneNodeAnimator* anim =
-			smgr->createFlyCircleAnimator(core::vector3df(0, 0, 30), 20.0f);
-		if (anim)
-		{
-			n->addAnimator(anim);
-			anim->drop();
-		}
-	}
-
-	// Model 1
-	scene::IAnimatedMeshSceneNode* anms =
-		smgr->addAnimatedMeshSceneNode(smgr->getMesh("../../media/ninja.b3d"));
-
-	if (anms)
-	{
-		scene::ISceneNodeAnimator* anim =
-			smgr->createFlyStraightAnimator(core::vector3df(100, 0, 60),
-				core::vector3df(-100, 0, 60), 3500, true);
-		if (anim)
-		{
-			anms->addAnimator(anim);
-			anim->drop();
-		}
-		anms->setMaterialFlag(video::EMF_LIGHTING, false);
-
-		anms->setFrameLoop(0, 13);
-		anms->setAnimationSpeed(15);
-		//      anms->setMD2Animation(scene::EMAT_RUN);
-
-		anms->setScale(core::vector3df(2.f, 2.f, 2.f));
-		anms->setRotation(core::vector3df(0, -90, 0));
-		//      anms->setMaterialTexture(0, driver->getTexture("../../media/sydney.bmp"));
-	}
-
-	// Model 2
-	//irr::scene::IAnimatedMesh* mesh = smgr->getMesh("../../Bin/Meshes/sydney.md2");
-
-	//if (!mesh) {
-	//	device->drop();
-	//	return 1;
+	//scene::ISceneNode * node = smgr->addSphereSceneNode();
+	//if (node)
+	//{
+	//	node->setPosition(core::vector3df(0, 0, 30));
+	//	node->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
+	//	node->setMaterialFlag(video::EMF_LIGHTING, false);
 	//}
 
-	//node = smgr->addAnimatedMeshSceneNode(mesh);
+	//// Cube scene node and an attached "fly circle"
+	//scene::ISceneNode* n = smgr->addCubeSceneNode();
 
-	//if (node) {
-	//	node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-	//	node->setMD2Animation(irr::scene::EMAT_STAND);
-	//	node->setMaterialTexture(0, driver->getTexture("../../Bin/Meshes/sydney.bmp"));
+	//if (n)
+	//{
+	//	n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
+	//	n->setMaterialFlag(video::EMF_LIGHTING, false);
+	//	scene::ISceneNodeAnimator* anim =
+	//		smgr->createFlyCircleAnimator(core::vector3df(0, 0, 30), 20.0f);
+	//	if (anim)
+	//	{
+	//		n->addAnimator(anim);
+	//		anim->drop();
+	//	}
 	//}
 
-	//smgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
+	//Model 2
+	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("../../Bin/Meshes/sydney.md2");
+
+	if (!mesh) {
+		device->drop();
+		return 1;
+	}
+
+	node = smgr->addAnimatedMeshSceneNode(mesh);
+
+	if (node) {
+		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+		node->setMD2Animation(irr::scene::EMAT_STAND);
+		node->setMaterialTexture(0, driver->getTexture("../../Bin/Meshes/sydney.bmp"));
+	}
+
+	smgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
 	
 	smgr->addCameraSceneNodeFPS();
 	device->getCursorControl()->setVisible(false);
