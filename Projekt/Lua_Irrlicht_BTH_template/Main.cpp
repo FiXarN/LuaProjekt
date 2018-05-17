@@ -12,6 +12,10 @@
 #include "lua.hpp"
 #include <irrlicht.h>
 
+static int addMesh(lua_State* L);
+static int addBox(lua_State* L);
+static int getNodes(lua_State* L);
+
 void ConsoleThread(lua_State* L) {
 	char command[1000];
 	while(GetConsoleWindow()) {
@@ -52,5 +56,17 @@ int main()
 	device->drop();
 
 	conThread.join();
+	return 0;
+}
+
+static int addMesh(lua_State* L) {
+	return 0;
+}
+
+static int addBox(lua_State* L) {
+	return 0;
+}
+
+static int getNodes(lua_State* L) {
 	return 0;
 }
