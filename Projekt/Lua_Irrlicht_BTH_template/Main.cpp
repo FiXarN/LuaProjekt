@@ -35,13 +35,7 @@ int main()
 	lua_State* L = luaL_newstate();
 	luaL_openlibs(L);
 
-		std::thread conThread(ConsoleThread, L);
-
-
-	// ask user for driver
-	video::E_DRIVER_TYPE driverType = driverChoiceConsole();
-	if (driverType == video::EDT_COUNT)
-		return 1;
+	std::thread conThread(ConsoleThread, L);
 
 	// create device
 	MyEventReceiver receiver;
