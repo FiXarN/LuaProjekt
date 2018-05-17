@@ -12,8 +12,17 @@ public:
 	virtual bool OnEvent(const SEvent& event)
 	{
 		// Remember whether each key is down or up
-		if (event.EventType == irr::EET_KEY_INPUT_EVENT)
+		if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
 			KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
+
+			switch (event.MouseInput.Event) 
+			{
+			case: EMIE_MOUSE_MOVED
+				Position.X = event.MouseInput.X;
+				Position.Y = event.MouseInput.Y;
+				break;
+			}
+		}
 
 		return false;
 	}
