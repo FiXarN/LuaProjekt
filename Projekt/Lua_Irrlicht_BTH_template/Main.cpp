@@ -70,28 +70,16 @@ int main()
 
 	device->getCursorControl()->setVisible(false);
 
-
-
 	/*--------------------------------------------------------------------*/
 	lua_register(L, "addMesh", addMesh);
 	lua_register(L, "addBox", addBox);
 	lua_register(L, "getNodes", getNodes);
-
-
-	int lastFPS = -1;
-	irr::u32 then = device->getTimer()->getTime();
-	irr::f32 MOVEMENT_SPEED = 0.2f;
 	/*--------------------------------------------------------------------*/
 
 
 	while (device->run())
 	{
-		/*-------------------F P S------------------*/
-		const u32 now = device->getTimer()->getTime();
-		const f32 frameDeltaTime = (f32)(now - then) / 1000.0f;
-		then = now;
-
-		// Input Receiver Check
+		//-------------Input Receiver Check-----------
 		if (device->isWindowActive()) {
 			camera->setInputReceiverEnabled(true);
 		}
@@ -101,24 +89,6 @@ int main()
 		/*------------------------------------------*/
 
 		driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
-
-		smgr->drawAll(); // draw the 3d scene
-		device->getGUIEnvironment()->drawAll(); // draw the gui environment (the logo)
-
-		driver->endScene();
-
-		int fps = driver->getFPS();
-
-		if (lastFPS != fps)
-		{
-			core::stringw tmp(L"Movement Example - Irrlicht Engine [");
-			tmp += driver->getName();
-			tmp += L"] fps: ";
-			tmp += fps;
-
-			device->setWindowCaption(tmp.c_str());
-			lastFPS = fps;
-		}
 
 		smgr->drawAll();
 		guienv->drawAll();
