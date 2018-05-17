@@ -87,6 +87,7 @@ int main()
 		/*------------------------------------------*/
 		irr::u32 now = device->getTimer()->getTime();
 		irr::f32 deltaTime = (irr::f32)(now - then) / 1000.0f;
+		then = now;
 		/*------------------------------------------*/
 
 		smgr->drawAll();
