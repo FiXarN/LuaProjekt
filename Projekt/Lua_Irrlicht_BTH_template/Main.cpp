@@ -102,7 +102,7 @@ int main()
 		node->setMaterialTexture(0, driver->getTexture("../../Bin/Meshes/sydney.bmp"));
 	}
 
-	smgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
+	//smgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
 	
 	smgr->addCameraSceneNodeFPS();
 	device->getCursorControl()->setVisible(false);
