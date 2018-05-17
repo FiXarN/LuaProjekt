@@ -41,12 +41,6 @@ int main()
 	MyEventReceiver receiver;
 
 	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_SOFTWARE, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
-	if(!device)
-		return 1;
-
-
-	if (device == 0)
-		return 1; // could not create selected driver.
 
 	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
 	irr::video::IVideoDriver* driver	= device->getVideoDriver();
