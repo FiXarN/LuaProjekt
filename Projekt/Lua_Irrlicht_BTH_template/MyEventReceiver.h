@@ -7,6 +7,10 @@ using namespace irr;
 
 class MyEventReceiver : public IEventReceiver
 {
+private:
+	// We use this array to store the current state of each key
+	bool KeyIsDown[KEY_KEY_CODES_COUNT];
+	core::position2di Position;
 public:
 	// This is the one method that we have to implement
 	virtual bool OnEvent(const SEvent& event)
@@ -17,7 +21,7 @@ public:
 
 			switch (event.MouseInput.Event) 
 			{
-			case: EMIE_MOUSE_MOVED
+			case EMIE_MOUSE_MOVED:
 				Position.X = event.MouseInput.X;
 				Position.Y = event.MouseInput.Y;
 				break;
@@ -40,9 +44,4 @@ public:
 		for (u32 i = 0; i<KEY_KEY_CODES_COUNT; ++i)
 			KeyIsDown[i] = false;
 	}
-
-private:
-	// We use this array to store the current state of each key
-	bool KeyIsDown[KEY_KEY_CODES_COUNT];
-	core::position2di Position;
 };
