@@ -35,24 +35,12 @@ int main()
 	lua_State* L = luaL_newstate();
 	luaL_openlibs(L);
 
-		std::thread conThread(ConsoleThread, L);
-
-
-	// ask user for driver
-	video::E_DRIVER_TYPE driverType = driverChoiceConsole();
-	if (driverType == video::EDT_COUNT)
-		return 1;
+	std::thread conThread(ConsoleThread, L);
 
 	// create device
 	MyEventReceiver receiver;
 
 	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_SOFTWARE, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
-	if(!device)
-		return 1;
-
-
-	if (device == 0)
-		return 1; // could not create selected driver.
 
 	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
 	irr::video::IVideoDriver* driver	= device->getVideoDriver();
@@ -61,32 +49,7 @@ int main()
 
 	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
 
-	// Sphere node that will be moved with WASD
-	//scene::ISceneNode * node = smgr->addSphereSceneNode();
-	//if (node)
-	//{
-	//	node->setPosition(core::vector3df(0, 0, 30));
-	//	node->setMaterialTexture(0, driver->getTexture("../../media/wall.bmp"));
-	//	node->setMaterialFlag(video::EMF_LIGHTING, false);
-	//}
-
-	//// Cube scene node and an attached "fly circle"
-	//scene::ISceneNode* n = smgr->addCubeSceneNode();
-
-	//if (n)
-	//{
-	//	n->setMaterialTexture(0, driver->getTexture("../../media/t351sml.jpg"));
-	//	n->setMaterialFlag(video::EMF_LIGHTING, false);
-	//	scene::ISceneNodeAnimator* anim =
-	//		smgr->createFlyCircleAnimator(core::vector3df(0, 0, 30), 20.0f);
-	//	if (anim)
-	//	{
-	//		n->addAnimator(anim);
-	//		anim->drop();
-	//	}
-	//}
-
-	//Model 2
+	//Model
 	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("../../Bin/Meshes/sydney.md2");
 
 	if (!mesh) {
