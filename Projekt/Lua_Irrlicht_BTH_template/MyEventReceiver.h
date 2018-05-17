@@ -21,6 +21,8 @@ public:
 				Position.X = event.MouseInput.X;
 				Position.Y = event.MouseInput.Y;
 				break;
+			default:
+				break;
 			}
 		}
 
