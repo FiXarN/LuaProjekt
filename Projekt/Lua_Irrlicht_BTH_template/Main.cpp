@@ -16,6 +16,8 @@ static int addMesh(lua_State* L);
 static int addBox(lua_State* L);
 static int getNodes(lua_State* L);
 
+irr::scene::IAnimatedMeshSceneNode* node;
+
 void ConsoleThread(lua_State* L) {
 	char command[1000];
 	while(GetConsoleWindow()) {
@@ -44,6 +46,26 @@ int main()
 	irr::gui::IGUIEnvironment* guienv	= device->getGUIEnvironment();
 
 	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
+
+
+	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("../../Bin/Meshes/sydney.md2");
+
+	if (!mesh) {
+		device->drop();
+		return 1;
+	}
+
+
+	node = smgr->addAnimatedMeshSceneNode(mesh);
+
+	if (node) {
+		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+		node->setMD2Animation(irr::scene::EMAT_STAND);
+		node->setMaterialTexture(0, driver->getTexture("../../Bin/Meshes/sydney.bmp"));
+	}
+
+	smgr->addCameraSceneNode(0, irr::core::vector3df(0, 30, -40), irr::core::vector3df(0, 5, 0));
+
 
 	/*--------------------------------------------------------------------*/
 	lua_register(L, "addMesh", addMesh);
