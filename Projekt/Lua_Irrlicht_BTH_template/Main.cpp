@@ -16,6 +16,8 @@
 static int addMesh(lua_State* L);
 static int addBox(lua_State* L);
 static int getNodes(lua_State* L);
+static int cameraFunction(lua_State* L);
+static int snapshot(lua_State* L);
 
 irr::scene::IAnimatedMeshSceneNode* node;
 
@@ -74,6 +76,8 @@ int main()
 	lua_register(L, "addMesh", addMesh);
 	lua_register(L, "addBox", addBox);
 	lua_register(L, "getNodes", getNodes);
+	lua_register(L, "camera", cameraFunction);
+	lua_register(L, "snapshot", snapshot);
 	/*--------------------------------------------------------------------*/
 
 
@@ -111,5 +115,13 @@ static int addBox(lua_State* L) {
 }
 
 static int getNodes(lua_State* L) {
+	return 0;
+}
+
+static int cameraFunction(lua_State* L) {
+	return 0;
+}
+
+static int snapshot(lua_State* L) {
 	return 0;
 }
