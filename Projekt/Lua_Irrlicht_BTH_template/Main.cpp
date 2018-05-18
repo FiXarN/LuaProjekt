@@ -11,7 +11,6 @@
 #include <thread>
 #include "lua.hpp"
 #include <irrlicht.h>
-#include "MyEventReceiver.h"
 #include <string>
 
 static int addMesh(lua_State* L);
@@ -46,7 +45,6 @@ int main()
 	std::thread conThread(ConsoleThread, L);
 
 	// create device
-	MyEventReceiver receiver;
 
 	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
 
@@ -104,7 +102,7 @@ int main()
 		}
 		/*------------------------------------------*/
 
-		driver->beginScene(true, true, video::SColor(255, 113, 113, 133));
+		driver->beginScene(true, true, irr::video::SColor(255, 113, 113, 133));
 
 		smgr->drawAll();
 		guienv->drawAll();
