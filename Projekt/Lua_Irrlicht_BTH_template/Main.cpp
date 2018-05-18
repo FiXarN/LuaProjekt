@@ -194,6 +194,8 @@ static int getNodes(lua_State* L) {
 static int camera(lua_State* L) {
 	luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
 
+
+
 	lua_rawgeti(L, 1, 1);
 	lua_rawgeti(L, 1, 2);
 	lua_rawgeti(L, 1, 3);
