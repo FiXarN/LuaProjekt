@@ -16,10 +16,12 @@
 static int addMesh(lua_State* L);
 static int addBox(lua_State* L);
 static int getNodes(lua_State* L);
-static int cameraFunction(lua_State* L);
+static int camera(lua_State* L);
 static int snapshot(lua_State* L);
 
 irr::scene::IAnimatedMeshSceneNode* node;
+irr::core::vector3df cameraPosition;
+irr::core::vector3df cameraTarget;
 
 void ConsoleThread(lua_State* L) {
 	char command[1000];
@@ -68,7 +70,7 @@ int main()
 		node->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 	}
 	
-	scene::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS();
+	irr::scene::ICameraSceneNode *cam = smgr->addCameraSceneNodeFPS();
 
 	device->getCursorControl()->setVisible(false);
 
@@ -76,7 +78,7 @@ int main()
 	lua_register(L, "addMesh", addMesh);
 	lua_register(L, "addBox", addBox);
 	lua_register(L, "getNodes", getNodes);
-	lua_register(L, "camera", cameraFunction);
+	lua_register(L, "camera", camera);
 	lua_register(L, "snapshot", snapshot);
 	/*--------------------------------------------------------------------*/
 
@@ -85,10 +87,12 @@ int main()
 	{
 		//-------------Input Receiver Check-----------
 		if (device->isWindowActive()) {
-			camera->setInputReceiverEnabled(true);
+			cam->setInputReceiverEnabled(true);
 		}
 		else {
-			camera->setInputReceiverEnabled(false);
+			cam->setInputReceiverEnabled(false);
+			cam->setPosition(cameraPosition);
+			cam->setTarget(cameraTarget);
 		}
 		/*------------------------------------------*/
 
@@ -118,7 +122,24 @@ static int getNodes(lua_State* L) {
 	return 0;
 }
 
-static int cameraFunction(lua_State* L) {
+static int camera(lua_State* L) {
+	luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
+
+	lua_rawgeti(L, 1, 1);
+	lua_rawgeti(L, 1, 2);
+	lua_rawgeti(L, 1, 3);
+
+	lua_rawgeti(L, 2, 1);
+	lua_rawgeti(L, 2, 2);
+	lua_rawgeti(L, 2, 3);
+
+	cameraPosition = irr::core::vector3df(lua_tonumber(L, 3), lua_tonumber(L, 4), lua_tonumber(L, 5));
+	cameraTarget = irr::core::vector3df(lua_tonumber(L, 6), lua_tonumber(L, 7), lua_tonumber(L, 8));
+
+	for (int i = 3; i < 9; i++) {
+		std::cout << i << ": " << lua_tonumber(L, i) << std::endl;
+	}
+
 	return 0;
 }
 
