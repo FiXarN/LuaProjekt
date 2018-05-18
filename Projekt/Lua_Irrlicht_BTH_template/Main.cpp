@@ -172,6 +172,9 @@ static int addBox(lua_State* L) {
 		}
 	}
 	else {
+		if (lua_isnumber(L, 2)) {
+			size = lua_tonumber(L, 2);
+		}
 		counter++;
 		name = std::to_string(counter);
 	}
@@ -185,7 +188,11 @@ static int addBox(lua_State* L) {
 		pos.Y = lua_tonumber(L, -2);
 		pos.Z = lua_tonumber(L, -1);
 	}
-
+	std::cout << "Name: " << name << std::endl;
+	std::cout << "Size: " << size << std::endl;
+	std::cout << "Pos X: " << pos.X << std::endl;
+	std::cout << "Pos Y: " << pos.Y << std::endl;
+	std::cout << "Pos Z: " << pos.Z << std::endl;
 	///*---------------AddBox----------------------*/
 	boxNode = smgr->addCubeSceneNode(size, 0, -1, pos, irr::core::vector3df(0, 0, 0), irr::core::vector3df(1, 1, 1));
 	if (boxNode) {
