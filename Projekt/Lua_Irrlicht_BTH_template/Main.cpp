@@ -118,11 +118,89 @@ int main()
 	return 0;
 }
 
+//Exempelinput
+//addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}})
 static int addMesh(lua_State* L) {
-	//luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
-	irr::core::vector3df triX = { -10.0, -10.0, 50.0 };
-	irr::core::vector3df triY = { 10.0, -10.0, 50.0 };
-	irr::core::vector3df triZ = { 0.0, 10.0, 50.0 };
+	luaL_argcheck(L, lua_istable(L, 1), -1, "Error input is not a table");
+
+	lua_len(L, 1);
+	int length = lua_tonumber(L, -1);
+	luaL_argcheck(L, length % 3 == 0, -1, "Error: number of components in triangle list");
+	lua_pop(L, 1);
+
+	irr::core::vector3df triX;
+	irr::core::vector3df triY;
+	irr::core::vector3df triZ;
+
+	//X
+	lua_rawgeti(L, 1, 1);
+	luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
+
+	lua_len(L, 2);
+	length = lua_tonumber(L, -1);
+	luaL_argcheck(L, length == 3, -1, "Error: number of components in first vertex");
+	lua_pop(L, 1);
+
+	lua_rawgeti(L, 2, 1);
+	luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
+	triX.X = lua_tonumber(L, 3);
+
+	lua_rawgeti(L, 2, 2);
+	luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
+	triX.Y = lua_tonumber(L, 4);
+
+	lua_rawgeti(L, 2, 3);
+	luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
+	triX.Z = lua_tonumber(L, 5);
+
+	lua_pop(L, 4);
+
+	//Y
+	lua_rawgeti(L, 1, 2);
+	luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
+
+	lua_len(L, 2);
+	length = lua_tonumber(L, -1);
+	luaL_argcheck(L, length == 3, -1, "Error: number of components in second vertex");
+	lua_pop(L, 1);
+
+	lua_rawgeti(L, 2, 1);
+	luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
+	triY.X = lua_tonumber(L, 3);
+
+	lua_rawgeti(L, 2, 2);
+	luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
+	triY.Y = lua_tonumber(L, 4);
+
+	lua_rawgeti(L, 2, 3);
+	luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
+	triY.Z = lua_tonumber(L, 5);
+
+	lua_pop(L, 4);
+
+	//Z
+	lua_rawgeti(L, 1, 3);
+	luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
+
+	lua_len(L, 2);
+	length = lua_tonumber(L, -1);
+	luaL_argcheck(L, length == 3, -1, "Error: number of components in third vertex");
+	lua_pop(L, 1);
+
+	lua_rawgeti(L, 2, 1);
+	luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
+	triZ.X = lua_tonumber(L, 3);
+
+	lua_rawgeti(L, 2, 2);
+	luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
+	triZ.Y = lua_tonumber(L, 4);
+
+	lua_rawgeti(L, 2, 3);
+	luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
+	triZ.Z = lua_tonumber(L, 5);
+
+	lua_pop(L, 4);
+
 
 	irr::scene::SMesh *Tri = new irr::scene::SMesh();
 	irr::scene::SMeshBuffer *meshBuf = new irr::scene::SMeshBuffer();
