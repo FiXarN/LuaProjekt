@@ -17,11 +17,14 @@
 static int addMesh(lua_State* L);
 static int addBox(lua_State* L);
 static int getNodes(lua_State* L);
-static int cameraFunction(lua_State* L);
+static int camera(lua_State* L);
 static int snapshot(lua_State* L);
 
 irr::scene::IAnimatedMeshSceneNode* node;
 irr::scene::ISceneNode * boxNode;
+irr::core::vector3df cameraPosition;
+irr::core::vector3df cameraTarget;
+irr::scene::ISceneNode * meshNode;
 irr::scene::ISceneManager* smgr;
 
 void ConsoleThread(lua_State* L) {
@@ -45,7 +48,7 @@ int main()
 	// create device
 	MyEventReceiver receiver;
 
-	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_SOFTWARE, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
+	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
 
 	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
 	irr::video::IVideoDriver* driver	= device->getVideoDriver();
@@ -71,7 +74,7 @@ int main()
 		node->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 	}
 	
-	scene::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS();
+	irr::scene::ICameraSceneNode *cam = smgr->addCameraSceneNodeFPS();
 
 	device->getCursorControl()->setVisible(false);
 
@@ -79,7 +82,7 @@ int main()
 	lua_register(L, "addMesh", addMesh);
 	lua_register(L, "addBox", addBox);
 	lua_register(L, "getNodes", getNodes);
-	lua_register(L, "camera", cameraFunction);
+	lua_register(L, "camera", camera);
 	lua_register(L, "snapshot", snapshot);
 	/*--------------------------------------------------------------------*/
 
@@ -88,10 +91,12 @@ int main()
 	{
 		//-------------Input Receiver Check-----------
 		if (device->isWindowActive()) {
-			camera->setInputReceiverEnabled(true);
+			cam->setInputReceiverEnabled(true);
 		}
 		else {
-			camera->setInputReceiverEnabled(false);
+			cam->setInputReceiverEnabled(false);
+			cam->setPosition(cameraPosition);
+			cam->setTarget(cameraTarget);
 		}
 		/*------------------------------------------*/
 
@@ -110,6 +115,41 @@ int main()
 }
 
 static int addMesh(lua_State* L) {
+	//luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
+	irr::core::vector3df triX = { -10.0, -10.0, 50.0 };
+	irr::core::vector3df triY = { 10.0, -10.0, 50.0 };
+	irr::core::vector3df triZ = { 0.0, 10.0, 50.0 };
+
+	irr::scene::SMesh *Tri = new irr::scene::SMesh();
+	irr::scene::SMeshBuffer *meshBuf = new irr::scene::SMeshBuffer();
+	
+	Tri->addMeshBuffer(meshBuf);
+	meshBuf->drop();
+
+	meshBuf->Vertices.reallocate(3);
+	meshBuf->Vertices.set_used(3);
+
+	meshBuf->Vertices[0] = irr::video::S3DVertex(triX.X, triX.Y, triX.Z,	1, 1, 0,	irr::video::SColor(150, 200, 160, 255), 0, 1);
+	meshBuf->Vertices[1] = irr::video::S3DVertex(triY.X, triY.Y, triY.Z,	1, 1, 0,	irr::video::SColor(240, 115, 160, 255), 1, 1);
+	meshBuf->Vertices[2] = irr::video::S3DVertex(triZ.X, triZ.Y, triZ.Z,	1, 1, 0,	irr::video::SColor(130, 160, 230, 255), 1, 0);
+	
+	meshBuf->Indices.reallocate(3);
+	meshBuf->Indices.set_used(3);
+
+	meshBuf->Indices[0] = 0;
+	meshBuf->Indices[1] = 1;
+	meshBuf->Indices[2] = 2;
+
+	meshBuf->recalculateBoundingBox();
+
+
+	irr::scene::IMeshSceneNode* triNode = smgr->addMeshSceneNode(Tri);
+
+	triNode->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
+	triNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	triNode->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
+	//triNode->setMaterialTexture(0, irrDriver->getTexture("rust0.jpg"));
+
 	return 0;
 }
 
@@ -160,7 +200,33 @@ static int getNodes(lua_State* L) {
 	return 0;
 }
 
-static int cameraFunction(lua_State* L) {
+static int camera(lua_State* L) {
+	luaL_argcheck(L, lua_istable(L, 1), -1, "Error: Position 1 is not a table");
+	luaL_argcheck(L, lua_istable(L, 2), -1, "Error: Position 2 is not a table");
+
+
+	lua_rawgeti(L, 1, 1);
+	lua_rawgeti(L, 1, 2);
+	lua_rawgeti(L, 1, 3);
+
+	lua_rawgeti(L, 2, 1);
+	lua_rawgeti(L, 2, 2);
+	lua_rawgeti(L, 2, 3);
+
+	luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: Position 3 is not a number");
+	luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: Position 4 is not a number");
+	luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: Position 5 is not a number");
+	luaL_argcheck(L, lua_isnumber(L, 6), -1, "Error: Position 6 is not a number");
+	luaL_argcheck(L, lua_isnumber(L, 7), -1, "Error: Position 7 is not a number");
+	luaL_argcheck(L, lua_isnumber(L, 8), -1, "Error: Position 8 is not a number");
+
+	cameraPosition = irr::core::vector3df(lua_tonumber(L, 3), lua_tonumber(L, 4), lua_tonumber(L, 5));
+	cameraTarget = irr::core::vector3df(lua_tonumber(L, 6), lua_tonumber(L, 7), lua_tonumber(L, 8));
+
+	for (int i = 3; i < 9; i++) {
+		std::cout << i << ": " << lua_tonumber(L, i) << std::endl;
+	}
+
 	return 0;
 }
 
