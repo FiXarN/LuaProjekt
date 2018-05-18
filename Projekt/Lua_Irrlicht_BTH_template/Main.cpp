@@ -100,6 +100,10 @@ int main()
 		//-------------Input Receiver Check-----------
 		if (device->isWindowActive()) {
 			cam->setInputReceiverEnabled(true);
+			cameraPosition = cam->getPosition();
+			cameraTarget = cam->getTarget();
+			cam->setPosition(cameraPosition);
+			cam->setTarget(cameraTarget);
 		}
 		else {
 			cam->setInputReceiverEnabled(false);
