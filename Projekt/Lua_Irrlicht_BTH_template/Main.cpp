@@ -68,10 +68,10 @@ int main()
 		node->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		node->setMD2Animation(irr::scene::EMAT_STAND);
 		node->setMaterialTexture(0, driver->getTexture("../../Bin/Meshes/sydney.bmp"));
+		node->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 	}
 	
 	scene::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS();
-	
 
 	device->getCursorControl()->setVisible(false);
 
