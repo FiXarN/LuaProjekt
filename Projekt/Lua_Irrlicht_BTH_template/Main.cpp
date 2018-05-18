@@ -12,6 +12,7 @@
 #include "lua.hpp"
 #include <irrlicht.h>
 #include "MyEventReceiver.h"
+#include <string>
 
 static int addMesh(lua_State* L);
 static int addBox(lua_State* L);
@@ -22,6 +23,8 @@ static int snapshot(lua_State* L);
 irr::scene::IAnimatedMeshSceneNode* node;
 irr::core::vector3df cameraPosition;
 irr::core::vector3df cameraTarget;
+irr::scene::ISceneNode * meshNode;
+irr::scene::ISceneManager* smgr;
 
 void ConsoleThread(lua_State* L) {
 	char command[1000];
@@ -44,11 +47,11 @@ int main()
 	// create device
 	MyEventReceiver receiver;
 
-	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_SOFTWARE, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
+	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
 
 	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
 	irr::video::IVideoDriver* driver	= device->getVideoDriver();
-	irr::scene::ISceneManager* smgr		= device->getSceneManager();
+	smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* guienv	= device->getGUIEnvironment();
 
 	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
@@ -73,6 +76,15 @@ int main()
 	irr::scene::ICameraSceneNode *cam = smgr->addCameraSceneNodeFPS();
 
 	device->getCursorControl()->setVisible(false);
+
+	/*---------------AddBox----------------------*/
+	meshNode = smgr->addCubeSceneNode();
+	if (meshNode) {
+		//meshNode->setPosition(pos);
+		meshNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	}
+
+	/*-------------------------------------------*/
 
 	/*--------------------------------------------------------------------*/
 	lua_register(L, "addMesh", addMesh);
@@ -111,10 +123,67 @@ int main()
 }
 
 static int addMesh(lua_State* L) {
+	//luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
+	irr::core::vector3df triX = { -10.0, -10.0, 50.0 };
+	irr::core::vector3df triY = { 10.0, -10.0, 50.0 };
+	irr::core::vector3df triZ = { 0.0, 10.0, 50.0 };
+
+	irr::scene::SMesh *Tri = new irr::scene::SMesh();
+	irr::scene::SMeshBuffer *meshBuf = new irr::scene::SMeshBuffer();
+	
+	Tri->addMeshBuffer(meshBuf);
+	meshBuf->drop();
+
+	meshBuf->Vertices.reallocate(3);
+	meshBuf->Vertices.set_used(3);
+
+	meshBuf->Vertices[0] = irr::video::S3DVertex(triX.X, triX.Y, triX.Z,	1, 1, 0,	irr::video::SColor(150, 200, 160, 255), 0, 1);
+	meshBuf->Vertices[1] = irr::video::S3DVertex(triY.X, triY.Y, triY.Z,	1, 1, 0,	irr::video::SColor(240, 115, 160, 255), 1, 1);
+	meshBuf->Vertices[2] = irr::video::S3DVertex(triZ.X, triZ.Y, triZ.Z,	1, 1, 0,	irr::video::SColor(130, 160, 230, 255), 1, 0);
+	
+	meshBuf->Indices.reallocate(3);
+	meshBuf->Indices.set_used(3);
+
+	meshBuf->Indices[0] = 0;
+	meshBuf->Indices[1] = 1;
+	meshBuf->Indices[2] = 2;
+
+	meshBuf->recalculateBoundingBox();
+
+
+	irr::scene::IMeshSceneNode* triNode = smgr->addMeshSceneNode(Tri);
+
+	triNode->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
+	triNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	triNode->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
+	//triNode->setMaterialTexture(0, irrDriver->getTexture("rust0.jpg"));
+
 	return 0;
 }
 
 static int addBox(lua_State* L) {
+
+	irr::core::vector3df pos;
+	irr::f32 size;
+	std::string name;
+
+	luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
+
+	pos.X = lua_tonumber(L, 1);
+	pos.Y = lua_tonumber(L, 2);
+	pos.Z = lua_tonumber(L, 3);
+	//size = lua_tonumber(L, 4);
+
+
+	///*---------------AddBox----------------------*/
+	//meshNode = smgr->addCubeSceneNode();
+	//if (meshNode) {
+	//	meshNode->setPosition(pos);
+	//	meshNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	//}
+
+	///*-------------------------------------------*/
+
 	return 0;
 }
 
