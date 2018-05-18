@@ -12,6 +12,7 @@
 #include "lua.hpp"
 #include <irrlicht.h>
 #include "MyEventReceiver.h"
+#include <string>
 
 static int addMesh(lua_State* L);
 static int addBox(lua_State* L);
@@ -20,6 +21,8 @@ static int cameraFunction(lua_State* L);
 static int snapshot(lua_State* L);
 
 irr::scene::IAnimatedMeshSceneNode* node;
+irr::scene::ISceneNode * meshNode;
+irr::scene::ISceneManager* smgr;
 
 void ConsoleThread(lua_State* L) {
 	char command[1000];
@@ -46,7 +49,7 @@ int main()
 
 	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
 	irr::video::IVideoDriver* driver	= device->getVideoDriver();
-	irr::scene::ISceneManager* smgr		= device->getSceneManager();
+	smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* guienv	= device->getGUIEnvironment();
 
 	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
@@ -71,6 +74,15 @@ int main()
 	
 
 	device->getCursorControl()->setVisible(false);
+
+	/*---------------AddBox----------------------*/
+	meshNode = smgr->addCubeSceneNode();
+	if (meshNode) {
+		//meshNode->setPosition(pos);
+		meshNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	}
+
+	/*-------------------------------------------*/
 
 	/*--------------------------------------------------------------------*/
 	lua_register(L, "addMesh", addMesh);
@@ -111,6 +123,28 @@ static int addMesh(lua_State* L) {
 }
 
 static int addBox(lua_State* L) {
+
+	irr::core::vector3df pos;
+	irr::f32 size;
+	std::string name;
+
+	luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
+
+	pos.X = lua_tonumber(L, 1);
+	pos.Y = lua_tonumber(L, 2);
+	pos.Z = lua_tonumber(L, 3);
+	//size = lua_tonumber(L, 4);
+
+
+	///*---------------AddBox----------------------*/
+	//meshNode = smgr->addCubeSceneNode();
+	//if (meshNode) {
+	//	meshNode->setPosition(pos);
+	//	meshNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	//}
+
+	///*-------------------------------------------*/
+
 	return 0;
 }
 
