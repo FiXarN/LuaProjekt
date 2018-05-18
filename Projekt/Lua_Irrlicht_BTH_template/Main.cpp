@@ -307,10 +307,6 @@ static int camera(lua_State* L) {
 	cameraPosition = irr::core::vector3df(lua_tonumber(L, 3), lua_tonumber(L, 4), lua_tonumber(L, 5));
 	cameraTarget = irr::core::vector3df(lua_tonumber(L, 6), lua_tonumber(L, 7), lua_tonumber(L, 8));
 
-	for (int i = 3; i < 9; i++) {
-		std::cout << i << ": " << lua_tonumber(L, i) << std::endl;
-	}
-
 	return 0;
 }
 
