@@ -286,6 +286,7 @@ static int addBox(lua_State* L) {
 		boxNode = smgr->addCubeSceneNode(size, 0, -1, pos, irr::core::vector3df(0, 0, 0), irr::core::vector3df(1, 1, 1));
 		if (boxNode) {
 			boxNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+			boxNode->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 		}
 		/*-------------------------------------------*/
 	}
