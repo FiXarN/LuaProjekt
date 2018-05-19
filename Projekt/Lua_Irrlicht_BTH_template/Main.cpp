@@ -26,7 +26,7 @@ irr::core::vector3df cameraTarget;
 irr::scene::ISceneNode * meshNode;
 irr::scene::ISceneManager* smgr;
 irr::video::IVideoDriver* driver;
-irr::video::IImage *image;
+irr::video::IImage *screenshot;
 
 void ConsoleThread(lua_State* L) {
 	char command[1000];
@@ -109,7 +109,7 @@ int main()
 		guienv->drawAll();
 
 		driver->endScene();
-		image = driver->createScreenShot();
+		screenshot = driver->createScreenShot();
 	}
 
 	device->drop();
@@ -347,6 +347,7 @@ static int camera(lua_State* L) {
 }
 
 static int snapshot(lua_State* L) {
+	irr::video::IImage *image = screenshot;
 	std::string fileName;
 
 	luaL_argcheck(L, lua_isstring(L, 1), -1, "Not a vaild name");
