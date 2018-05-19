@@ -124,18 +124,17 @@ static int addMesh(lua_State* L) {
 	luaL_argcheck(L, lua_istable(L, 1), -1, "Error input is not a table");
 
 	lua_len(L, 1);
-	int nrOfTriangles = lua_tonumber(L, -1);
-	luaL_argcheck(L, nrOfTriangles % 3 == 0, -1, "Error: not a valid number of vertices");
+	int nrOfVertices = lua_tonumber(L, -1);
+	luaL_argcheck(L, nrOfVertices % 3 == 0, -1, "Error: not a valid number of vertices");
 	lua_pop(L, 1);
 
 	irr::core::vector3df triU;
 	irr::core::vector3df triV;
 	irr::core::vector3df triW;
-	std::cout << (nrOfTriangles / 3) << std::endl;
 
 	int length = 0;
 
-	for (int i = 1; i <= (nrOfTriangles / 3); i++) {
+	for (int i = 1; i <= (nrOfVertices / 3); i++) {
 		//X
 		lua_rawgeti(L, 1, (i * 3) - 2);
 		luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
