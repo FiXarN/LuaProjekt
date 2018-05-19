@@ -47,7 +47,7 @@ int main()
 
 	// create device
 
-	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
+	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_SOFTWARE, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
 	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
 	driver	= device->getVideoDriver();
 	smgr = device->getSceneManager();
@@ -107,7 +107,7 @@ int main()
 		smgr->drawAll();
 		guienv->drawAll();
 
-		driver->endScene();		
+		driver->endScene();
 	}
 
 	device->drop();
@@ -356,15 +356,14 @@ static int snapshot(lua_State* L) {
 	// File name string check
 	luaL_argcheck(L, fileName.substr(fileName.find_last_of(".") + 1) == "jpg" || fileName.substr(fileName.find_last_of(".") + 1) == "png", -1, "Bad filename");
 
-
 	std::string filePath = "../../Bin/Screenshot/" + fileName;
 
-	if (driver->writeImageToFile(image, "../../Bin/Screenshot/Test.png" /*filePath.c_str()*/)) {
-		std::cout << "Bild lyckades att sparas" << std::endl;
+	if (driver->writeImageToFile(image, filePath.c_str())) {
+		std::cout << "Image is saved" << std::endl;
 		image->drop();
 	}
 	else {
-		std::cout << "fucked up bild" << std::endl;
+		std::cout << "Image couldn't be saved" << std::endl;
 	}
 	return 0;
 }
