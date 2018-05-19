@@ -124,18 +124,17 @@ static int addMesh(lua_State* L) {
 	luaL_argcheck(L, lua_istable(L, 1), -1, "Error input is not a table");
 
 	lua_len(L, 1);
-	int nrOfTriangles = lua_tonumber(L, -1);
-	luaL_argcheck(L, nrOfTriangles % 3 == 0, -1, "Error: not a valid number of vertices");
+	int nrOfVertices = lua_tonumber(L, -1);
+	luaL_argcheck(L, nrOfVertices % 3 == 0, -1, "Error: not a valid number of vertices");
 	lua_pop(L, 1);
 
-	irr::core::vector3df triX;
-	irr::core::vector3df triY;
-	irr::core::vector3df triZ;
-	std::cout << (nrOfTriangles / 3) << std::endl;
+	irr::core::vector3df triU;
+	irr::core::vector3df triV;
+	irr::core::vector3df triW;
 
 	int length = 0;
 
-	for (int i = 1; i <= (nrOfTriangles / 3); i++) {
+	for (int i = 1; i <= (nrOfVertices / 3); i++) {
 		//X
 		lua_rawgeti(L, 1, (i * 3) - 2);
 		luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
@@ -147,15 +146,15 @@ static int addMesh(lua_State* L) {
 
 		lua_rawgeti(L, 2, 1);
 		luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
-		triX.X = lua_tonumber(L, 3);
+		triU.X = lua_tonumber(L, 3);
 
 		lua_rawgeti(L, 2, 2);
 		luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
-		triX.Y = lua_tonumber(L, 4);
+		triU.Y = lua_tonumber(L, 4);
 
 		lua_rawgeti(L, 2, 3);
 		luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
-		triX.Z = lua_tonumber(L, 5);
+		triU.Z = lua_tonumber(L, 5);
 
 		lua_pop(L, 4);
 
@@ -170,15 +169,15 @@ static int addMesh(lua_State* L) {
 
 		lua_rawgeti(L, 2, 1);
 		luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
-		triY.X = lua_tonumber(L, 3);
+		triV.X = lua_tonumber(L, 3);
 
 		lua_rawgeti(L, 2, 2);
 		luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
-		triY.Y = lua_tonumber(L, 4);
+		triV.Y = lua_tonumber(L, 4);
 
 		lua_rawgeti(L, 2, 3);
 		luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
-		triY.Z = lua_tonumber(L, 5);
+		triV.Z = lua_tonumber(L, 5);
 
 		lua_pop(L, 4);
 
@@ -193,15 +192,15 @@ static int addMesh(lua_State* L) {
 
 		lua_rawgeti(L, 2, 1);
 		luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
-		triZ.X = lua_tonumber(L, 3);
+		triW.X = lua_tonumber(L, 3);
 
 		lua_rawgeti(L, 2, 2);
 		luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
-		triZ.Y = lua_tonumber(L, 4);
+		triW.Y = lua_tonumber(L, 4);
 
 		lua_rawgeti(L, 2, 3);
 		luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
-		triZ.Z = lua_tonumber(L, 5);
+		triW.Z = lua_tonumber(L, 5);
 
 		lua_pop(L, 4);
 
@@ -215,9 +214,9 @@ static int addMesh(lua_State* L) {
 		meshBuf->Vertices.reallocate(3);
 		meshBuf->Vertices.set_used(3);
 
-		meshBuf->Vertices[0] = irr::video::S3DVertex(triX.X, triX.Y, triX.Z, 1, 1, 0, irr::video::SColor(150, 200, 160, 255), 0, 1);
-		meshBuf->Vertices[1] = irr::video::S3DVertex(triY.X, triY.Y, triY.Z, 1, 1, 0, irr::video::SColor(240, 115, 160, 255), 1, 1);
-		meshBuf->Vertices[2] = irr::video::S3DVertex(triZ.X, triZ.Y, triZ.Z, 1, 1, 0, irr::video::SColor(130, 160, 230, 255), 1, 0);
+		meshBuf->Vertices[0] = irr::video::S3DVertex(triU.X, triU.Y, triU.Z, 1, 1, 0, irr::video::SColor(150, 200, 160, 255), 0, 1);
+		meshBuf->Vertices[1] = irr::video::S3DVertex(triV.X, triV.Y, triV.Z, 1, 1, 0, irr::video::SColor(240, 115, 160, 255), 1, 1);
+		meshBuf->Vertices[2] = irr::video::S3DVertex(triW.X, triW.Y, triW.Z, 1, 1, 0, irr::video::SColor(130, 160, 230, 255), 1, 0);
 
 		meshBuf->Indices.reallocate(3);
 		meshBuf->Indices.set_used(3);
@@ -354,8 +353,9 @@ static int snapshot(lua_State* L) {
 		fileName = lua_tostring(L, 1);
 	}
 
-	/*-------------Ta bort delar av en sträng, te.x hej.png ska bara bli .png---------------*/
-	/*--------------------------------------------------------------------------------------*/
+	// File name string check
+	luaL_argcheck(L, fileName.substr(fileName.find_last_of(".") + 1) == "jpg" || fileName.substr(fileName.find_last_of(".") + 1) == "png", -1, "Bad filename");
+
 
 	std::string filePath = "../../Bin/Screenshot/" + fileName;
 
