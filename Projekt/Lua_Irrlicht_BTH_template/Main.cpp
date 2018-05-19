@@ -353,8 +353,9 @@ static int snapshot(lua_State* L) {
 		fileName = lua_tostring(L, 1);
 	}
 
-	/*-------------Ta bort delar av en sträng, te.x hej.png ska bara bli .png---------------*/
-	/*--------------------------------------------------------------------------------------*/
+	// File name string check
+	luaL_argcheck(L, fileName.substr(fileName.find_last_of(".") + 1) == "jpg" || fileName.substr(fileName.find_last_of(".") + 1) == "png", -1, "Bad filename");
+
 
 	std::string filePath = "../../Bin/Screenshot/" + fileName;
 
