@@ -289,7 +289,7 @@ static int addBox(lua_State* L) {
 		/*-------------------------------------------*/
 	}
 	else {
-		luaL_argcheck(L, nrOfComponents == 3, -1, "Wrong input of vertex");
+		luaL_argcheck(L, nrOfComponents == 3, -1, "Wrong input of vertex components");
 	}
 	return 0;
 }
