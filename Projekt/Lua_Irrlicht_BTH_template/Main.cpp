@@ -293,20 +293,40 @@ static int camera(lua_State* L) {
 	luaL_argcheck(L, lua_istable(L, 2), -1, "Error: Position 2 is not a table");
 
 
+	int length;
+	lua_len(L, 1);
+	length = lua_tonumber(L, -1);
+	lua_pop(L, 1);
+
+	int length1;
+	lua_len(L, 2);
+	length1 = lua_tonumber(L, -1);
+	lua_pop(L, 1);
+
+
 	lua_rawgeti(L, 1, 1);
 	lua_rawgeti(L, 1, 2);
 	lua_rawgeti(L, 1, 3);
+
 
 	lua_rawgeti(L, 2, 1);
 	lua_rawgeti(L, 2, 2);
 	lua_rawgeti(L, 2, 3);
 
-	luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: Position 3 is not a number");
-	luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: Position 4 is not a number");
-	luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: Position 5 is not a number");
-	luaL_argcheck(L, lua_isnumber(L, 6), -1, "Error: Position 6 is not a number");
-	luaL_argcheck(L, lua_isnumber(L, 7), -1, "Error: Position 7 is not a number");
-	luaL_argcheck(L, lua_isnumber(L, 8), -1, "Error: Position 8 is not a number");
+	if (length == 3) {
+		luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: coordinate is not a number");
+		luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: coordinate is not a number");
+		luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: coordinate is not a number");
+	}
+	else
+		luaL_argcheck(L, length % 3 == 0, -1, "Error: target has wrong number of coordinates");
+	if (length1 == 3) {
+		luaL_argcheck(L, lua_isnumber(L, 6), -1, "Error: coordinate is not a number");
+		luaL_argcheck(L, lua_isnumber(L, 7), -1, "Error: coordinate is not a number");
+		luaL_argcheck(L, lua_isnumber(L, 8), -1, "Error: coordinate is not a number");
+	}
+	else
+		luaL_argcheck(L, length % 3 == 0, -1, "Error: target has wrong number of coordinates");
 
 	cameraPosition = irr::core::vector3df(lua_tonumber(L, 3), lua_tonumber(L, 4), lua_tonumber(L, 5));
 	cameraTarget = irr::core::vector3df(lua_tonumber(L, 6), lua_tonumber(L, 7), lua_tonumber(L, 8));
