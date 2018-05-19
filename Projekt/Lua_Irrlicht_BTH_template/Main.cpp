@@ -117,118 +117,126 @@ int main()
 }
 
 //Exempelinput
-//addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}})
+//1st addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}})
+//2st addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}, {-15.0, -15.0, 40.0}, {15.0, -15.0, 40.0}, {0.0, 15.0, 40.0}})
+//5st addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}, {-15.0, -15.0, 40.0}, {15.0, -15.0, 40.0}, {0.0, 15.0, 40.0}, {-20.0, -20.0, 30.0}, {20.0, -20.0, 30.0}, {0.0, 20.0, 30.0}, {-25.0, -25.0, 20.0}, {25.0, -25.0, 20.0}, {0.0, 25.0, 20.0}, {-30.0, -30.0, 15.0}, {30.0, -30.0, 15.0}, {0.0, 30.0, 15.0}})
 static int addMesh(lua_State* L) {
 	luaL_argcheck(L, lua_istable(L, 1), -1, "Error input is not a table");
 
 	lua_len(L, 1);
-	int length = lua_tonumber(L, -1);
-	luaL_argcheck(L, length % 3 == 0, -1, "Error: number of components in triangle list");
+	int nrOfTriangles = lua_tonumber(L, -1);
+	luaL_argcheck(L, nrOfTriangles % 3 == 0, -1, "Error: not a valid number of vertices");
 	lua_pop(L, 1);
 
 	irr::core::vector3df triX;
 	irr::core::vector3df triY;
 	irr::core::vector3df triZ;
+	std::cout << (nrOfTriangles / 3) << std::endl;
 
-	//X
-	lua_rawgeti(L, 1, 1);
-	luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
+	int length = 0;
 
-	lua_len(L, 2);
-	length = lua_tonumber(L, -1);
-	luaL_argcheck(L, length == 3, -1, "Error: number of components in first vertex");
-	lua_pop(L, 1);
+	for (int i = 1; i <= (nrOfTriangles / 3); i++) {
+		//X
+		lua_rawgeti(L, 1, (i * 3) - 2);
+		luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
 
-	lua_rawgeti(L, 2, 1);
-	luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
-	triX.X = lua_tonumber(L, 3);
+		lua_len(L, 2);
+		length = lua_tonumber(L, -1);
+		luaL_argcheck(L, length == 3, -1, "Error: number of components in first vertex");
+		lua_pop(L, 1);
 
-	lua_rawgeti(L, 2, 2);
-	luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
-	triX.Y = lua_tonumber(L, 4);
+		lua_rawgeti(L, 2, 1);
+		luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
+		triX.X = lua_tonumber(L, 3);
 
-	lua_rawgeti(L, 2, 3);
-	luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
-	triX.Z = lua_tonumber(L, 5);
+		lua_rawgeti(L, 2, 2);
+		luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
+		triX.Y = lua_tonumber(L, 4);
 
-	lua_pop(L, 4);
+		lua_rawgeti(L, 2, 3);
+		luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
+		triX.Z = lua_tonumber(L, 5);
 
-	//Y
-	lua_rawgeti(L, 1, 2);
-	luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
+		lua_pop(L, 4);
 
-	lua_len(L, 2);
-	length = lua_tonumber(L, -1);
-	luaL_argcheck(L, length == 3, -1, "Error: number of components in second vertex");
-	lua_pop(L, 1);
+		//Y
+		lua_rawgeti(L, 1, (i * 3) - 1);
+		luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
 
-	lua_rawgeti(L, 2, 1);
-	luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
-	triY.X = lua_tonumber(L, 3);
+		lua_len(L, 2);
+		length = lua_tonumber(L, -1);
+		luaL_argcheck(L, length == 3, -1, "Error: number of components in second vertex");
+		lua_pop(L, 1);
 
-	lua_rawgeti(L, 2, 2);
-	luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
-	triY.Y = lua_tonumber(L, 4);
+		lua_rawgeti(L, 2, 1);
+		luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
+		triY.X = lua_tonumber(L, 3);
 
-	lua_rawgeti(L, 2, 3);
-	luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
-	triY.Z = lua_tonumber(L, 5);
+		lua_rawgeti(L, 2, 2);
+		luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
+		triY.Y = lua_tonumber(L, 4);
 
-	lua_pop(L, 4);
+		lua_rawgeti(L, 2, 3);
+		luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
+		triY.Z = lua_tonumber(L, 5);
 
-	//Z
-	lua_rawgeti(L, 1, 3);
-	luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
+		lua_pop(L, 4);
 
-	lua_len(L, 2);
-	length = lua_tonumber(L, -1);
-	luaL_argcheck(L, length == 3, -1, "Error: number of components in third vertex");
-	lua_pop(L, 1);
+		//Z
+		lua_rawgeti(L, 1, (i * 3));
+		luaL_argcheck(L, lua_istable(L, -1), -1, "Error input is not a table");
 
-	lua_rawgeti(L, 2, 1);
-	luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
-	triZ.X = lua_tonumber(L, 3);
+		lua_len(L, 2);
+		length = lua_tonumber(L, -1);
+		luaL_argcheck(L, length == 3, -1, "Error: number of components in third vertex");
+		lua_pop(L, 1);
 
-	lua_rawgeti(L, 2, 2);
-	luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
-	triZ.Y = lua_tonumber(L, 4);
+		lua_rawgeti(L, 2, 1);
+		luaL_argcheck(L, lua_isnumber(L, 3), -1, "Error: non-numeric coordinates");
+		triZ.X = lua_tonumber(L, 3);
 
-	lua_rawgeti(L, 2, 3);
-	luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
-	triZ.Z = lua_tonumber(L, 5);
+		lua_rawgeti(L, 2, 2);
+		luaL_argcheck(L, lua_isnumber(L, 4), -1, "Error: non-numeric coordinates");
+		triZ.Y = lua_tonumber(L, 4);
 
-	lua_pop(L, 4);
+		lua_rawgeti(L, 2, 3);
+		luaL_argcheck(L, lua_isnumber(L, 5), -1, "Error: non-numeric coordinates");
+		triZ.Z = lua_tonumber(L, 5);
 
-
-	irr::scene::SMesh *Tri = new irr::scene::SMesh();
-	irr::scene::SMeshBuffer *meshBuf = new irr::scene::SMeshBuffer();
-	
-	Tri->addMeshBuffer(meshBuf);
-	meshBuf->drop();
-
-	meshBuf->Vertices.reallocate(3);
-	meshBuf->Vertices.set_used(3);
-
-	meshBuf->Vertices[0] = irr::video::S3DVertex(triX.X, triX.Y, triX.Z,	1, 1, 0,	irr::video::SColor(150, 200, 160, 255), 0, 1);
-	meshBuf->Vertices[1] = irr::video::S3DVertex(triY.X, triY.Y, triY.Z,	1, 1, 0,	irr::video::SColor(240, 115, 160, 255), 1, 1);
-	meshBuf->Vertices[2] = irr::video::S3DVertex(triZ.X, triZ.Y, triZ.Z,	1, 1, 0,	irr::video::SColor(130, 160, 230, 255), 1, 0);
-	
-	meshBuf->Indices.reallocate(3);
-	meshBuf->Indices.set_used(3);
-
-	meshBuf->Indices[0] = 0;
-	meshBuf->Indices[1] = 1;
-	meshBuf->Indices[2] = 2;
-
-	meshBuf->recalculateBoundingBox();
+		lua_pop(L, 4);
 
 
-	irr::scene::IMeshSceneNode* triNode = smgr->addMeshSceneNode(Tri);
+		irr::scene::SMesh *Tri = new irr::scene::SMesh();
+		irr::scene::SMeshBuffer *meshBuf = new irr::scene::SMeshBuffer();
 
-	triNode->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
-	triNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-	triNode->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
-	//triNode->setMaterialTexture(0, irrDriver->getTexture("rust0.jpg"));
+		Tri->addMeshBuffer(meshBuf);
+		meshBuf->drop();
+
+		meshBuf->Vertices.reallocate(3);
+		meshBuf->Vertices.set_used(3);
+
+		meshBuf->Vertices[0] = irr::video::S3DVertex(triX.X, triX.Y, triX.Z, 1, 1, 0, irr::video::SColor(150, 200, 160, 255), 0, 1);
+		meshBuf->Vertices[1] = irr::video::S3DVertex(triY.X, triY.Y, triY.Z, 1, 1, 0, irr::video::SColor(240, 115, 160, 255), 1, 1);
+		meshBuf->Vertices[2] = irr::video::S3DVertex(triZ.X, triZ.Y, triZ.Z, 1, 1, 0, irr::video::SColor(130, 160, 230, 255), 1, 0);
+
+		meshBuf->Indices.reallocate(3);
+		meshBuf->Indices.set_used(3);
+
+		meshBuf->Indices[0] = 0;
+		meshBuf->Indices[1] = 1;
+		meshBuf->Indices[2] = 2;
+
+		meshBuf->recalculateBoundingBox();
+
+
+		irr::scene::IMeshSceneNode* triNode = smgr->addMeshSceneNode(Tri);
+
+		triNode->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
+		triNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+		triNode->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
+		//triNode->setMaterialTexture(0, irrDriver->getTexture("textur.jpg"));
+	}
+
 	return 0;
 }
 
