@@ -266,21 +266,31 @@ static int addBox(lua_State* L) {
 		name = std::to_string(counter);
 	}
 
-	lua_rawgeti(L, 1, 1); //Hämtar x värdet och lägger högst upp på stacken
-	lua_rawgeti(L, 1, 2); //Hämtar y värdet och lägger högst upp på stacken
-	lua_rawgeti(L, 1, 3); //Hämtar z värdet och lägger högst upp på stacken
+	int nrOfComponents = 0;
+	lua_len(L, 1);
+	nrOfComponents = lua_tonumber(L, -1);
+	lua_pop(L, 1);
 
-	if (lua_isnumber(L, -1) || lua_isnumber(L, -2) || lua_isnumber(L, -3)) {
-		pos.X = lua_tonumber(L, -3);
-		pos.Y = lua_tonumber(L, -2);
-		pos.Z = lua_tonumber(L, -1);
+	if (nrOfComponents == 3) {
+		lua_rawgeti(L, 1, 1); //Hämtar x värdet och lägger högst upp på stacken
+		lua_rawgeti(L, 1, 2); //Hämtar y värdet och lägger högst upp på stacken
+		lua_rawgeti(L, 1, 3); //Hämtar z värdet och lägger högst upp på stacken
+
+		if (lua_isnumber(L, -1) || lua_isnumber(L, -2) || lua_isnumber(L, -3)) {
+			pos.X = lua_tonumber(L, -3);
+			pos.Y = lua_tonumber(L, -2);
+			pos.Z = lua_tonumber(L, -1);
+		}
+		/*---------------AddBox----------------------*/
+		boxNode = smgr->addCubeSceneNode(size, 0, -1, pos, irr::core::vector3df(0, 0, 0), irr::core::vector3df(1, 1, 1));
+		if (boxNode) {
+			boxNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+		}
+		/*-------------------------------------------*/
 	}
-	/*---------------AddBox----------------------*/
-	boxNode = smgr->addCubeSceneNode(size, 0, -1, pos, irr::core::vector3df(0, 0, 0), irr::core::vector3df(1, 1, 1));
-	if (boxNode) {
-		boxNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+	else {
+		luaL_argcheck(L, nrOfComponents == 3, -1, "Wrong input of vertex");
 	}
-	/*-------------------------------------------*/
 	return 0;
 }
 
