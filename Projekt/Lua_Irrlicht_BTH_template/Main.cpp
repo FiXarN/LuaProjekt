@@ -25,6 +25,7 @@ irr::core::vector3df cameraPosition;
 irr::core::vector3df cameraTarget;
 irr::scene::ISceneNode * meshNode;
 irr::scene::ISceneManager* smgr;
+irr::video::IVideoDriver* driver;
 
 void ConsoleThread(lua_State* L) {
 	char command[1000];
@@ -47,9 +48,8 @@ int main()
 	// create device
 
 	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
-
 	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
-	irr::video::IVideoDriver* driver	= device->getVideoDriver();
+	driver	= device->getVideoDriver();
 	smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* guienv	= device->getGUIEnvironment();
 
@@ -229,7 +229,6 @@ static int addMesh(lua_State* L) {
 	triNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 	triNode->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
 	//triNode->setMaterialTexture(0, irrDriver->getTexture("rust0.jpg"));
-
 	return 0;
 }
 
@@ -268,13 +267,12 @@ static int addBox(lua_State* L) {
 		pos.Y = lua_tonumber(L, -2);
 		pos.Z = lua_tonumber(L, -1);
 	}
-	///*---------------AddBox----------------------*/
+	/*---------------AddBox----------------------*/
 	boxNode = smgr->addCubeSceneNode(size, 0, -1, pos, irr::core::vector3df(0, 0, 0), irr::core::vector3df(1, 1, 1));
 	if (boxNode) {
 		boxNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 	}
-
-	///*-------------------------------------------*/
+	/*-------------------------------------------*/
 	return 0;
 }
 
@@ -309,5 +307,26 @@ static int camera(lua_State* L) {
 }
 
 static int snapshot(lua_State* L) {
+	irr::video::IImage *image = driver->createScreenShot();
+	std::string fileName;
+
+	luaL_argcheck(L, lua_isstring(L, 1), -1, "Not a vaild name");
+
+	if (lua_isstring(L, 1)) {
+		fileName = lua_tostring(L, 1);
+	}
+
+	/*-------------Ta bort delar av en sträng, te.x hej.png ska bara bli .png---------------*/
+	/*--------------------------------------------------------------------------------------*/
+
+	std::string filePath = "../../Bin/Screenshot/" + fileName;
+
+	if (driver->writeImageToFile(image, "../../Bin/Screenshot/Test.png" /*filePath.c_str()*/)) {
+		std::cout << "Bild lyckades att sparas" << std::endl;
+		image->drop();
+	}
+	else {
+		std::cout << "fucked up bild" << std::endl;
+	}
 	return 0;
 }
