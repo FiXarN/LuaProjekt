@@ -21,6 +21,7 @@ static int snapshot(lua_State* L);
 
 irr::scene::IAnimatedMeshSceneNode* node;
 irr::scene::ISceneNode * boxNode;
+irr::scene::IMeshSceneNode* triNode;
 irr::core::vector3df cameraPosition;
 irr::core::vector3df cameraTarget;
 irr::scene::ISceneNode * meshNode;
@@ -234,7 +235,7 @@ static int addMesh(lua_State* L) {
 		meshBuf->recalculateBoundingBox();
 
 
-		irr::scene::IMeshSceneNode* triNode = smgr->addMeshSceneNode(Tri);
+		triNode = smgr->addMeshSceneNode(Tri);
 
 		triNode->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 		triNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
@@ -243,12 +244,6 @@ static int addMesh(lua_State* L) {
 		triNode->setID(++id);
 		std::string name = "TriangleNr" + std::to_string(++triCounter);
 		triNode->setName(name.c_str());
-
-		irr::u32 fourcc = (irr::u32)triNode->getType();
-		irr::c8* chars = (irr::c8*)&fourcc;
-		std::string code;
-		for (int i = 0; i < 4; i++)
-			code += chars[i];
 	}
 	return 0;
 }
@@ -311,8 +306,56 @@ static int addBox(lua_State* L) {
 }
 
 static int getNodes(lua_State* L) {
+	//addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}})
+	lua_newtable(L);
+	lua_createtable(L, 3, 0);
 
-	return 0;
+	//ID
+	/*lua_pushstring(L, "id: ");
+	lua_rawseti(L, 2, 1);
+
+	lua_pushstring(L, triNode->getID());
+	lua_rawseti(L, 2, 2);
+
+	lua_rawseti(L, 1, 2);*/
+
+	lua_pushstring(L, "id");
+	lua_pushnumber(L, triNode->getID());
+	lua_settable(L, -3);
+	
+	//Name
+	/*lua_pushstring(L, "Name: ");
+	lua_rawseti(L, 2, 1);
+
+	lua_pushstring(L, triNode->getName());
+	lua_rawseti(L, 2, 2);
+
+	lua_rawseti(L, 1, 2);*/
+
+	lua_pushstring(L, "name");
+	lua_pushstring(L, triNode->getName());
+	lua_settable(L, -3);
+
+	//Type
+	/*lua_pushstring(L, "Type: ");
+	lua_rawseti(L, 2, 1);*/
+
+	irr::u32 fourcc = (irr::u32)triNode->getType();
+	irr::c8* chars = (irr::c8*)&fourcc;
+	std::string code;
+	for (int i = 0; i < 4; i++)
+		code += chars[i];
+
+	/*lua_pushstring(L, code.c_str());
+	lua_rawseti(L, 2, 2);
+
+	lua_rawseti(L, 1, 3);*/
+
+	lua_pushstring(L, "type");
+	lua_pushstring(L, code.c_str());
+	lua_settable(L, -3);
+
+	return 1;
 }
 
 static int camera(lua_State* L) {
