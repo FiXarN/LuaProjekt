@@ -29,6 +29,7 @@ irr::video::IVideoDriver* driver;
 irr::video::IImage *screenshot;
 
 float id = 0;
+std::string name;
 
 void ConsoleThread(lua_State* L) {
 	char command[1000];
@@ -256,12 +257,11 @@ static int addMesh(lua_State* L) {
 	return 0;
 }
 
-float counter = 0;
+int boxCounter = 0;
 static int addBox(lua_State* L) {
 
 	irr::core::vector3df pos;
 	irr::f32 size = 0.0f;
-	std::string name;
 
 	luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
 	luaL_argcheck(L, lua_isnumber(L, 2), -1, "Error size, must be a number");
@@ -278,8 +278,7 @@ static int addBox(lua_State* L) {
 		if (lua_isnumber(L, 2)) {
 			size = lua_tonumber(L, 2);
 		}
-		counter++;
-		name = std::to_string(counter);
+		name = "BoxNameNr " + std::to_string(++boxCounter);
 	}
 
 	int nrOfComponents = 0;
@@ -309,13 +308,14 @@ static int addBox(lua_State* L) {
 		luaL_argcheck(L, nrOfComponents == 3, -1, "Wrong input of vertex components");
 	}
 
-	boxNode->setID(id++);
+	boxNode->setID(++id);
+	boxNode->setName(name.c_str());
 
-	std::cout << "ID: " << boxNode->getID() << std::endl;
 	return 0;
 }
 
 static int getNodes(lua_State* L) {
+
 	return 0;
 }
 
