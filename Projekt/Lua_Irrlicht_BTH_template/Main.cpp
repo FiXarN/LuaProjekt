@@ -124,6 +124,7 @@ int main()
 //1st addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}})
 //2st addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}, {-15.0, -15.0, 40.0}, {15.0, -15.0, 40.0}, {0.0, 15.0, 40.0}})
 //5st addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}, {-15.0, -15.0, 40.0}, {15.0, -15.0, 40.0}, {0.0, 15.0, 40.0}, {-20.0, -20.0, 30.0}, {20.0, -20.0, 30.0}, {0.0, 20.0, 30.0}, {-25.0, -25.0, 20.0}, {25.0, -25.0, 20.0}, {0.0, 25.0, 20.0}, {-30.0, -30.0, 15.0}, {30.0, -30.0, 15.0}, {0.0, 30.0, 15.0}})
+int triCounter = 0;
 static int addMesh(lua_State* L) {
 	luaL_argcheck(L, lua_istable(L, 1), -1, "Error input is not a table");
 
@@ -238,10 +239,19 @@ static int addMesh(lua_State* L) {
 		triNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		triNode->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
 
-		triNode->setID(id++);
-		//triNode->setMaterialTexture(0, irrDriver->getTexture("textur.jpg"));
+		triNode->setID(++id);
+		std::string name = "TriangleNr" + std::to_string(++triCounter);
+		triNode->setName(name.c_str());
 
+		irr::u32 fourcc = (irr::u32)triNode->getType();
+		irr::c8* chars = (irr::c8*)&fourcc;
+		std::string code;
+		for (int i = 0; i < 4; i++)
+			code += chars[i];
+
+		std::cout << "Type Tri: " << code << std::endl;
 		std::cout << "ID Tri: " << triNode->getID() << std::endl;
+		std::cout << "Name Tri: " << triNode->getName() << std::endl;
 	}
 	return 0;
 }
