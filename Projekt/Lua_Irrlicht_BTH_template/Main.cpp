@@ -28,6 +28,8 @@ irr::scene::ISceneManager* smgr;
 irr::video::IVideoDriver* driver;
 irr::video::IImage *screenshot;
 
+float id = 0;
+
 void ConsoleThread(lua_State* L) {
 	char command[1000];
 	while(GetConsoleWindow()) {
@@ -48,7 +50,7 @@ int main()
 
 	// create device
 
-	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_SOFTWARE, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
+	irr::IrrlichtDevice* device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2d<irr::u32>(640, 480), 16, false, false, true, 0);
 	device->setWindowCaption(L"Hello World! - Irrlicht Engine Demo");
 	driver	= device->getVideoDriver();
 	smgr = device->getSceneManager();
@@ -235,9 +237,12 @@ static int addMesh(lua_State* L) {
 		triNode->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 		triNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		triNode->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
-		//triNode->setMaterialTexture(0, irrDriver->getTexture("textur.jpg"));
-	}
 
+		triNode->setID(id++);
+		//triNode->setMaterialTexture(0, irrDriver->getTexture("textur.jpg"));
+
+		std::cout << "ID Tri: " << triNode->getID() << std::endl;
+	}
 	return 0;
 }
 
@@ -293,6 +298,10 @@ static int addBox(lua_State* L) {
 	else {
 		luaL_argcheck(L, nrOfComponents == 3, -1, "Wrong input of vertex components");
 	}
+
+	boxNode->setID(id++);
+
+	std::cout << "ID: " << boxNode->getID() << std::endl;
 	return 0;
 }
 
@@ -350,7 +359,7 @@ static int snapshot(lua_State* L) {
 	irr::video::IImage *image = screenshot;
 	std::string fileName;
 
-	luaL_argcheck(L, lua_isstring(L, 1), -1, "Not a vaild name");
+	luaL_argcheck(L, lua_isstring(L, 1), -1, "Not a vaild filename");
 
 	if (lua_isstring(L, 1)) {
 		fileName = lua_tostring(L, 1);
