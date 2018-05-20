@@ -249,10 +249,6 @@ static int addMesh(lua_State* L) {
 		std::string code;
 		for (int i = 0; i < 4; i++)
 			code += chars[i];
-
-		std::cout << "Type Tri: " << code << std::endl;
-		std::cout << "ID Tri: " << triNode->getID() << std::endl;
-		std::cout << "Name Tri: " << triNode->getName() << std::endl;
 	}
 	return 0;
 }
