@@ -28,6 +28,7 @@ irr::scene::ISceneNode * meshNode;
 irr::scene::ISceneManager* smgr;
 irr::video::IVideoDriver* driver;
 irr::video::IImage *screenshot;
+irr::scene::ICameraSceneNode *cam;
 
 float id = 0;
 std::string name;
@@ -77,8 +78,9 @@ int main()
 		node->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 	}
 	
-	irr::scene::ICameraSceneNode *cam = smgr->addCameraSceneNodeFPS();
-
+	cam = smgr->addCameraSceneNodeFPS();
+	cam->setName("Camera");
+	cam->setID(id++);
 	device->getCursorControl()->setVisible(false);
 
 	/*--------------------------------------------------------------------*/
