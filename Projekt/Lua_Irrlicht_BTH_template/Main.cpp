@@ -30,6 +30,7 @@ irr::video::IImage *screenshot;
 irr::scene::ICameraSceneNode *cam;
 
 float id = 0;
+std::string name;
 
 void ConsoleThread(lua_State* L) {
 	char command[1000];
@@ -126,6 +127,7 @@ int main()
 //1st addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}})
 //2st addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}, {-15.0, -15.0, 40.0}, {15.0, -15.0, 40.0}, {0.0, 15.0, 40.0}})
 //5st addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}, {-15.0, -15.0, 40.0}, {15.0, -15.0, 40.0}, {0.0, 15.0, 40.0}, {-20.0, -20.0, 30.0}, {20.0, -20.0, 30.0}, {0.0, 20.0, 30.0}, {-25.0, -25.0, 20.0}, {25.0, -25.0, 20.0}, {0.0, 25.0, 20.0}, {-30.0, -30.0, 15.0}, {30.0, -30.0, 15.0}, {0.0, 30.0, 15.0}})
+int triCounter = 0;
 static int addMesh(lua_State* L) {
 	luaL_argcheck(L, lua_istable(L, 1), -1, "Error input is not a table");
 
@@ -240,20 +242,24 @@ static int addMesh(lua_State* L) {
 		triNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
 		triNode->setMaterialFlag(irr::video::EMF_NORMALIZE_NORMALS, true);
 
-		triNode->setID(id++);
-		//triNode->setMaterialTexture(0, irrDriver->getTexture("textur.jpg"));
+		triNode->setID(++id);
+		std::string name = "TriangleNr" + std::to_string(++triCounter);
+		triNode->setName(name.c_str());
 
-		std::cout << "ID Tri: " << triNode->getID() << std::endl;
+		irr::u32 fourcc = (irr::u32)triNode->getType();
+		irr::c8* chars = (irr::c8*)&fourcc;
+		std::string code;
+		for (int i = 0; i < 4; i++)
+			code += chars[i];
 	}
 	return 0;
 }
 
-float counter = 0;
+int boxCounter = 0;
 static int addBox(lua_State* L) {
 
 	irr::core::vector3df pos;
 	irr::f32 size = 0.0f;
-	std::string name;
 
 	luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
 	luaL_argcheck(L, lua_isnumber(L, 2), -1, "Error size, must be a number");
@@ -270,8 +276,7 @@ static int addBox(lua_State* L) {
 		if (lua_isnumber(L, 2)) {
 			size = lua_tonumber(L, 2);
 		}
-		counter++;
-		name = std::to_string(counter);
+		name = "BoxNameNr " + std::to_string(++boxCounter);
 	}
 
 	int nrOfComponents = 0;
@@ -301,9 +306,9 @@ static int addBox(lua_State* L) {
 		luaL_argcheck(L, nrOfComponents == 3, -1, "Wrong input of vertex components");
 	}
 
-	boxNode->setID(id++);
+	boxNode->setID(++id);
+	boxNode->setName(name.c_str());
 
-	std::cout << "ID: " << boxNode->getID() << std::endl;
 	return 0;
 }
 
