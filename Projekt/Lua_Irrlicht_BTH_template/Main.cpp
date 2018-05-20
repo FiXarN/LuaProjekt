@@ -27,6 +27,7 @@ irr::scene::ISceneNode * meshNode;
 irr::scene::ISceneManager* smgr;
 irr::video::IVideoDriver* driver;
 irr::video::IImage *screenshot;
+irr::scene::ICameraSceneNode *cam;
 
 float id = 0;
 
@@ -75,8 +76,9 @@ int main()
 		node->setMaterialFlag(irr::video::EMF_BACK_FACE_CULLING, false);
 	}
 	
-	irr::scene::ICameraSceneNode *cam = smgr->addCameraSceneNodeFPS();
-
+	cam = smgr->addCameraSceneNodeFPS();
+	cam->setName("Camera");
+	cam->setID(id++);
 	device->getCursorControl()->setVisible(false);
 
 	/*--------------------------------------------------------------------*/
@@ -306,6 +308,26 @@ static int addBox(lua_State* L) {
 }
 
 static int getNodes(lua_State* L) {
+	lua_istable(L, -1);
+
+	for (int i = 0; i < id; i++) {
+		if (boxNode[i].getID() == id) {
+			lua_pushnumber(L, i+1);
+			lua_pushstring(L, "name");
+			lua_pushstring(L, boxNode[i].getName());
+
+			lua_pushnumber(L, i+1);
+			lua_pushstring(L, "id");
+			lua_pushnumber(L, boxNode[i].getID());
+
+		}
+		if (meshNode[i].getID() == id) {
+			lua_pushstring(L, meshNode[i].getName());
+		}
+	}
+	
+	
+
 	return 0;
 }
 
