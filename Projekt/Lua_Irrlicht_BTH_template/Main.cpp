@@ -58,15 +58,7 @@ int main()
 	smgr = device->getSceneManager();
 	irr::gui::IGUIEnvironment* guienv	= device->getGUIEnvironment();
 
-	guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
-
-	//Model
-	irr::scene::IAnimatedMesh* mesh = smgr->getMesh("../../Bin/Meshes/sydney.md2");
-
-	if (!mesh) {
-		device->drop();
-		return 1;
-	}
+	//guienv->addStaticText(L"Hello World! This is the Irrlicht Software renderer!", irr::core::rect<irr::s32>(10, 10, 260, 22), true);
 
 	cam = smgr->addCameraSceneNodeFPS();
 	cam->setName("Camera");
@@ -298,8 +290,6 @@ static int addBox(lua_State* L) {
 }
 
 static int getNodes(lua_State* L) {
-	//addMesh({{-10.0, -10.0, 50.0}, {10.0, -10.0, 50.0}, {0.0, 10.0, 50.0}})
-	// lägg till error checks
 	lua_newtable(L);
 
 	for (int i = 1; i <= id; i++) {
