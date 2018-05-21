@@ -65,7 +65,7 @@ int main()
 	cam->setID(++id);
 	device->getCursorControl()->setVisible(false);
 
-	/*--------------------------------------------------------------------*/
+	/*--------------------------Lua functions-----------------------------*/
 	lua_register(L, "addMesh", addMesh);
 	lua_register(L, "addBox", addBox);
 	lua_register(L, "getNodes", getNodes);
@@ -229,6 +229,8 @@ static int addMesh(lua_State* L) {
 		std::string name = "TriangleNr" + std::to_string(++triCounter);
 		triNode->setName(name.c_str());
 	}
+
+	lua_pop(L, 1);
 	return 0;
 }
 
@@ -238,7 +240,7 @@ static int addBox(lua_State* L) {
 	irr::core::vector3df pos;
 	irr::f32 size = 0.0f;
 
-	luaL_argcheck(L, lua_istable(L, 1), -1, "Error position table");
+	luaL_argcheck(L, lua_istable(L, 1), -1, "Error input is not a table");
 	luaL_argcheck(L, lua_isnumber(L, 2), -1, "Error size, must be a number");
 
 	if (lua_gettop(L) == 3) {
@@ -248,12 +250,14 @@ static int addBox(lua_State* L) {
 		if (lua_isstring(L, 3)) {
 			name = lua_tostring(L, 3);
 		}
+		lua_pop(L, 2);
 	}
 	else {
 		if (lua_isnumber(L, 2)) {
 			size = lua_tonumber(L, 2);
 		}
 		name = "BoxNameNr " + std::to_string(++boxCounter);
+		lua_pop(L, 1);
 	}
 
 	int nrOfComponents = 0;
@@ -266,11 +270,13 @@ static int addBox(lua_State* L) {
 		lua_rawgeti(L, 1, 2); //Hämtar y värdet och lägger högst upp på stacken
 		lua_rawgeti(L, 1, 3); //Hämtar z värdet och lägger högst upp på stacken
 
-		if (lua_isnumber(L, -1) || lua_isnumber(L, -2) || lua_isnumber(L, -3)) {
-			pos.X = lua_tonumber(L, -3);
-			pos.Y = lua_tonumber(L, -2);
-			pos.Z = lua_tonumber(L, -1);
-		}
+		luaL_argcheck(L, lua_isnumber(L, -1), -1, "Error: non-numeric coordinates on x coordinate");
+		luaL_argcheck(L, lua_isnumber(L, -2), -1, "Error: non-numeric coordinates on y coordinate");
+		luaL_argcheck(L, lua_isnumber(L, -3), -1, "Error: non-numeric coordinates on z coordinate");
+		pos.X = lua_tonumber(L, -3);
+		pos.Y = lua_tonumber(L, -2);
+		pos.Z = lua_tonumber(L, -1);
+		lua_pop(L, 4);
 		/*---------------AddBox----------------------*/
 		boxNode = smgr->addCubeSceneNode(size, 0, -1, pos, irr::core::vector3df(0, 0, 0), irr::core::vector3df(1, 1, 1));
 		if (boxNode) {
@@ -316,7 +322,6 @@ static int getNodes(lua_State* L) {
 
 		lua_rawseti(L, 1, i);
 	}
-
 	return 1;
 }
 
@@ -327,6 +332,7 @@ static int camera(lua_State* L) {
 
 	int length;
 	lua_len(L, 1);
+	
 	length = lua_tonumber(L, -1);
 	lua_pop(L, 1);
 
@@ -388,5 +394,6 @@ static int snapshot(lua_State* L) {
 	else {
 		std::cout << "Image couldn't be saved" << std::endl;
 	}
+	lua_pop(L, 1);
 	return 0;
 }
